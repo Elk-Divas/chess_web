@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	
+    
+    <link rel="stylesheet" href="style.css" type="text/stylesheet"/>
+
+  </head>
+  <body>
+	  <div class="table-responsive">
+	    <table name="chess-board" id="chess-board-table" class="table">
+	      <thead>
+	      </thead>
+	      <tbody>
+	        <tr>
+	          <td class="white-board-position" id="a8" onclick="clickPiece(this);">a8</td>
+	          <td class="black-board-position" id="b8" onclick="clickPiece(this);">b8</td>
+	          <td class="white-board-position" id="c8" onclick="clickPiece(this);">c8</td>
+	          <td class="black-board-position" id="d8" onclick="clickPiece(this);">d8</td>
+	          <td class="white-board-position" id="e8" onclick="clickPiece(this);">e8</td>
+	          <td class="black-board-position" id="f8" onclick="clickPiece(this);">f8</td>
+	          <td class="white-board-position" id="g8" onclick="clickPiece(this);">g8</td>
+	          <td class="black-board-position" id="h8" onclick="clickPiece(this);">h8</td>
+	        </tr>
+	        <tr>
+	          <td class="black-board-position" id="a7" onclick="clickPiece(this);">a7</td>
+	          <td class="white-board-position" id="b7" onclick="clickPiece(this);">b7</td>
+	          <td class="black-board-position" id="c7" onclick="clickPiece(this);">c7</td>
+	          <td class="white-board-position" id="d7" onclick="clickPiece(this);">d7</td>
+	          <td class="black-board-position" id="e7" onclick="clickPiece(this);">e7</td>
+	          <td class="white-board-position" id="f7" onclick="clickPiece(this);">f7</td>
+	          <td class="black-board-position" id="g7" onclick="clickPiece(this);">g7</td>
+	          <td class="white-board-position" id="h7" onclick="clickPiece(this);">h7</td>
+	        </tr>
+	        <tr>
+	          <td class="white-board-position" id="a6" onclick="clickPiece(this);">a6</td>
+	          <td class="black-board-position" id="b6" onclick="clickPiece(this);">b6</td>
+	          <td class="white-board-position" id="c6" onclick="clickPiece(this);">c6</td>
+	          <td class="black-board-position" id="d6" onclick="clickPiece(this);">d6</td>
+	          <td class="white-board-position" id="e6" onclick="clickPiece(this);">e6</td>
+	          <td class="black-board-position" id="f6" onclick="clickPiece(this);">f6</td>
+	          <td class="white-board-position" id="g6" onclick="clickPiece(this);">g6</td>
+	          <td class="black-board-position" id="h6" onclick="clickPiece(this);">h6</td>
+	        </tr>
+	        <tr>
+	          <td class="black-board-position" id="a5" onclick="clickPiece(this);">a5</td>
+	          <td class="white-board-position" id="b5" onclick="clickPiece(this);">b5</td>
+	          <td class="black-board-position" id="c5" onclick="clickPiece(this);">c5</td>
+	          <td class="white-board-position" id="d5" onclick="clickPiece(this);">d5</td>
+	          <td class="black-board-position" id="e5" onclick="clickPiece(this);">e5</td>
+	          <td class="white-board-position" id="f5" onclick="clickPiece(this);">f5</td>
+	          <td class="black-board-position" id="g5" onclick="clickPiece(this);">g5</td>
+	          <td class="white-board-position" id="h5" onclick="clickPiece(this);">h5</td>
+	        </tr>
+	        <tr>
+	          <td class="white-board-position" id="a4" onclick="clickPiece(this);">a4</td>
+	          <td class="black-board-position" id="b4" onclick="clickPiece(this);">b4</td>
+	          <td class="white-board-position" id="c4" onclick="clickPiece(this);">c4</td>
+	          <td class="black-board-position" id="d4" onclick="clickPiece(this);">d4</td>
+	          <td class="white-board-position" id="e4" onclick="clickPiece(this);">e4</td>
+	          <td class="black-board-position" id="f4" onclick="clickPiece(this);">f4</td>
+	          <td class="white-board-position" id="g4" onclick="clickPiece(this);">g4</td>
+	          <td class="black-board-position" id="h4" onclick="clickPiece(this);">h4</td>
+	        </tr>
+	        <tr>
+	          <td class="black-board-position" id="a3" onclick="clickPiece(this);">a3</td>
+	          <td class="white-board-position" id="b3" onclick="clickPiece(this);">b3</td>
+	          <td class="black-board-position" id="c3" onclick="clickPiece(this);">c3</td>
+	          <td class="white-board-position" id="d3" onclick="clickPiece(this);">d3</td>
+	          <td class="black-board-position" id="e3" onclick="clickPiece(this);">e3</td>
+	          <td class="white-board-position" id="f3" onclick="clickPiece(this);">f3</td>
+	          <td class="black-board-position" id="g3" onclick="clickPiece(this);">g3</td>
+	          <td class="white-board-position" id="h3" onclick="clickPiece(this);">h3</td>
+	        </tr>
+	        <tr>
+	          <td class="white-board-position" id="a2" onclick="clickPiece(this);">a2</td>
+	          <td class="black-board-position" id="b2" onclick="clickPiece(this);">b2</td>
+	          <td class="white-board-position" id="c2" onclick="clickPiece(this);">c2</td>
+	          <td class="black-board-position" id="d2" onclick="clickPiece(this);">d2</td>
+	          <td class="white-board-position" id="e2" onclick="clickPiece(this);">e2</td>
+	          <td class="black-board-position" id="f2" onclick="clickPiece(this);">f2</td>
+	          <td class="white-board-position" id="g2" onclick="clickPiece(this);">g2</td>
+	          <td class="black-board-position" id="h2" onclick="clickPiece(this);">h2</td>
+	        </tr>
+	        <tr>
+	          <td class="black-board-position" id="a1" onclick="clickPiece(this);">a1</td>
+	          <td class="white-board-position" id="b1" onclick="clickPiece(this);">b1</td>
+	          <td class="black-board-position" id="c1" onclick="clickPiece(this);">c1</td>
+	          <td class="white-board-position" id="d1" onclick="clickPiece(this);">d1</td>
+	          <td class="black-board-position" id="e1" onclick="clickPiece(this);">e1</td>
+	          <td class="white-board-position" id="f1" onclick="clickPiece(this);">f1</td>
+	          <td class="black-board-position" id="g1" onclick="clickPiece(this);">g1</td>
+	          <td class="white-board-position" id="h1" onclick="clickPiece(this);">h1</td>
+	        </tr>
+	        </tbody>
+	    </table>
+	  </div><!--/table-responsive-wrapper-->
+  </body>
+  <footer>
+    <script type="text/javascript" src="chess.js"></script>
+    <script type="text/javascript" src="engine.js"></script>
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+  	<!-- Latest compiled and minified JavaScript -->
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </footer>
+</html> 

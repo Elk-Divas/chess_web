@@ -1,0 +1,33 @@
+html,body {
+  background: gray;
+}
+table {
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+#chess-board-table {
+  margin: auto;
+  margin-top: 5%;
+  width: 50%;
+  height: 50%;
+}
+
+#chess-board-table td {
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid black;
+  margin: 0px;
+}
+@media (min-width: 768px) {#chess-board-table td {width: 45px; height: 45px;}}
+@media (min-width: 992px) {#chess-board-table td {width: 60px; height: 60px;}}
+@media (min-width: 1200px) {#chess-board-table td {width: 80px; height: 80px;}}
+
+.black-board-position {
+  background: #666;
+}
+
+.white-board-position {
+  background: #999;
+}
