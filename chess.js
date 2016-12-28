@@ -37,7 +37,7 @@ function Chess() {
     var xNames = {'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7};
     var j = Number(xNames[pos.slice(0,1)]);
     var i = (Number(pos.slice(1,2)) - 1);
-    return this.board[i][j].name != undefined ? this.board[i][j] : 'empty';
+    return this.board[i][j] instanceof Piece ? this.board[i][j] : 'empty';
   };
 
   this.getPieceFromCoords = function(y, x) {
@@ -53,6 +53,7 @@ function Chess() {
     piece = this.getPieceFromBoardName(elId);
     el = document.getElementById(elId);
 
+    console.log(piece.posName);
     if (!this.isPieceSelected) {
       //TODO: check if piece is right color
       // Selecting a Piece 
@@ -123,7 +124,6 @@ function Chess() {
   this.showAvailableMoves = function(piece) {
     var availableMoves = this.getAvailableMoves(piece);
     this.availableMoves = availableMoves.slice(0);
-    console.log(this.availableMoves);
     for (var i = 0; i < availableMoves.length; i++) {
       var boardName = this.getBoardPosition(availableMoves[i][0][0], availableMoves[i][0][1]);
       document.getElementById(boardName).style.border = '2px solid yellow';
@@ -134,7 +134,7 @@ function Chess() {
     var curPos = piece.pos.slice(0);
     var color = piece.color;
     var availableMoves = []; // [[[row,col], targetPiece], [[row,col], targetPiece]];
-    var up, down, xMoves, yMoves, freq, move, potentialMove, moves, validation, i, j, iterationComplete;
+    var up, down, xMoves, yMoves, freq, move, potentialMove, moves, validation, i, j, iterationComplete, specialMove;
 
     if (color == 'White') {
       up = 1,
@@ -189,6 +189,24 @@ function Chess() {
            }
          }
        }
+       else if (freq == 'special' || freq == 'attack') {
+         potentialMove = curPos.slice(0);
+         specialMove = piece.specialMoves[move];
+         moves = specialMove.move.split('_')[0].split('-');
+         for (j = 0; j < moves.length; j++) {
+           if (moves[j] in xMoves) {
+             potentialMove[1] += xMoves[moves[j]];
+            }
+           else {
+             potentialMove[0] += yMoves[moves[j]];
+            }
+          }
+         validation = this.validateMove(potentialMove, curPos, freq);
+         var validationPack = {piece: piece, specialMove: specialMove, potentialMove: potentialMove.slice(0), validation: validation};
+         if (validation.available && this.checkSpecialCondition(validationPack)) {
+           availableMoves.push([potentialMove.slice(0), validation.targetPiece]);
+          }
+       }
     }
 
     return availableMoves;
@@ -204,7 +222,19 @@ function Chess() {
     }
   };
 
-  this.validateMove = function(move, curPos) {
+  this.checkSpecialCondition = function(obj) {
+    var pieceType = obj.piece.nickname;
+    switch(pieceType) {
+      case "P":
+        if(obj.specialMove.condition(obj.piece, obj.validation.targetPiece)) {
+          obj.piece.isFirstMove = false;
+          return true;
+          break;
+        }
+    }
+  };
+
+  this.validateMove = function(move, curPos, moveType) {
     // determine if move is possible (out of bounds, or blocked, or pinned) 
     var y = move[0];
     var x = move[1];
@@ -226,9 +256,21 @@ function Chess() {
         }
         else {
           // opponent piece
-          returnValue.available = true;
-          returnValue.end = true;
-          returnValue.targetPiece = pieceInPotentialPosition;
+          if (curPiece.nickname !== 'P' || moveType == 'attack') {
+            returnValue.available = true;
+            returnValue.end = true;
+            returnValue.targetPiece = pieceInPotentialPosition;
+          }
+          else if (moveType == 'special') {
+            returnValue.available = false;
+            returnValue.end = true;
+            returnValue.targetPiece = pieceInPotentialPosition;
+          }
+          else if (curPiece.nickname == 'P' && moveType != 'attack') {
+            returnValue.available = false;
+            returnValue.end = true;
+            returnValue.targetPiece = pieceInPotentialPosition;
+          }
         }
       }
     }
@@ -256,22 +298,23 @@ function Chess() {
       // One row at a time
       for (var j = 0; j < 8; j++) {
         // Build columns for this row
+        var posName = this.getBoardPosition(i, j);
         if (i === 0 || i === 7) {
           // Top or bottom row
           if (j === 0 || j == 7)
             // First / Last column
-            this.board[i][j] = new Piece("R", i, j);
+            this.board[i][j] = new Piece("R", i, j, posName);
           else if (j === 1 || j === 6)
-            this.board[i][j] = new Piece("N", i, j);
+            this.board[i][j] = new Piece("N", i, j, posName);
           else if (j === 2 || j === 5) 
-            this.board[i][j] = new Piece("B", i, j);
+            this.board[i][j] = new Piece("B", i, j, posName);
           else if (j === 3) 
-            this.board[i][j] = new Piece("Q", i, j);
+            this.board[i][j] = new Piece("Q", i, j, posName);
           else if (j === 4) 
-            this.board[i][j] = new Piece("K", i, j);
+            this.board[i][j] = new Piece("K", i, j, posName);
         }
         else if (i === 1 || i === 6) {
-          this.board[i][j] = new Piece("P", i, j);
+          this.board[i][j] = new Piece("P", i, j, posName);
         }
       }
     }
@@ -279,9 +322,8 @@ function Chess() {
 
 }
 
-function Piece(piece, row, col) {
+function Piece(piece, row, col, posName) {
   // Chess Pieces
-  var chess = new Chess();
   if (row <= 2) {
     this.color = "White";
   } 
@@ -289,16 +331,15 @@ function Piece(piece, row, col) {
     this.color = "Black";
   }  
   this.pos = [row, col];
-  this.posName = chess.getBoardPosition(row,col);
+  this.posName = posName;
   switch (piece) {
     case "P":
       this.name = "Pawn";
       this.nickname = "P";
-      this.moves = ["up_once"];
-      this.attackMoves = ["up-left_once", "up-right_once"];
+      this.moves = ["up_once", "double-up_special", "attack-left_attack", "attack-right_attack", "enpassant-left_special", "enpassant-right_special"];
       this.isPinnedToKing = false;
-      this.enpessantLeft = false;
-      this.enpessantRight = false;
+      this.enpassantLeft = false;
+      this.enpassantRight = false;
       this.isFirstMove = true;
       this.isInGame = true;
       this.isProtected = false;
@@ -306,15 +347,33 @@ function Piece(piece, row, col) {
         {
           "double-up": {
             move: "up-up_once",
-            condition: this.firstMove
+            condition: function(self, otherPiece) {
+              return self.isFirstMove;
+            }
           },
-          "enpessant-left": {
+          "attack-left": {
             move: "up-left_once",
-            condition: this.enpessantLeft
+            condition: function(self, otherPiece) {
+              return otherPiece instanceof Piece && self.color !== otherPiece.color;
+            }
           },
-          "enpessant-right": {
+          "attack-right": {
             move: "up-right_once",
-            condition: this.enpessantRight
+            condition: function(self, otherPiece) {
+              return otherPiece instanceof Piece && self.color !== otherPiece.color;            
+            }
+          },
+          "enpassant-left": {
+            move: "up-left_once",
+            condition: function() {
+              return this.enpassantLeft;
+            }
+          },
+          "enpassant-right": {
+            move: "up-right_once",
+            condition: function() {
+              return this.enpassantRight;
+            }
           }
         };
       this.darkImage = "images/Chess_pdt60.png";
