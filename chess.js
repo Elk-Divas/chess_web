@@ -1,12 +1,16 @@
 function Chess() {
   //Main Chess Game Class
   
+  //TODO: Add castling functionality
+  //TODO: Add en passant functionality
+  //TODO: Add list of moves to a moveHistory array 
+  //TODO: Add undo functionality
+
   this.printBoard = function() {
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 8; j++) {
         var pos = this.getBoardPosition(i, j);
         el = document.getElementById(pos);
-        el.innerHTML = ' '//(this.board[i][j].nickname || ' ');
         if (this.board[i][j] instanceof Piece) {
           el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
           el.style.backgroundRepeat = 'no-repeat';
@@ -210,7 +214,7 @@ function Chess() {
          validation = this.validateMove(potentialMove, curPos, freq);
          var validationPack = {piece: piece, specialMove: specialMove, potentialMove: potentialMove.slice(0), validation: validation};
          if (validation.available && this.checkSpecialCondition(validationPack)) {
-           availableMoves.push([potentialMove.slice(0), validation.targetPiece]);
+           availableMoves.push([potentialMove.slice(0), validation.targetPiece, specialMove]);
           }
        }
     }
