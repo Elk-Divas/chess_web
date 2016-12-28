@@ -2,13 +2,8 @@ function Chess() {
   //Main Chess Game Class
   
   this.printBoard = function() {
-    //var string = "";
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 8; j++) {
-      //  if (j !== 7) 
-      //    string += (this.board[i][j].nickname || "-") + ",";
-      //  else 
-      //    string += (this.board[i][j].nickname || "-") + "\n";
         var pos = this.getBoardPosition(i, j);
         el = document.getElementById(pos);
         el.innerHTML = (this.board[i][j].nickname || ' ');
@@ -132,7 +127,7 @@ function Chess() {
     var curPos = piece.pos.slice(0);
     var color = piece.color;
     var availableMoves = []; // [[[row,col], targetPiece], [[row,col], targetPiece]];
-    var up, down;
+    var up, down, xMoves, yMoves, freq, move, potentialMove, moves, validation, i, j, iterationComplete;
 
     if (color == 'White') {
       up = 1,
@@ -143,16 +138,16 @@ function Chess() {
       down = 1;
     }
 
-    var xMoves = {'left': -1, 'right': 1};
-    var yMoves = {'up': up, 'down': down};
+    xMoves = {'left': -1, 'right': 1};
+    yMoves = {'up': up, 'down': down};
 
-    for (var i = 0; i < piece.moves.length; i++) {
-      var freq = piece.moves[i].split('_')[1];
-      var move = piece.moves[i].split('_')[0];
-      var potentialMove = curPos.slice(0);
+    for (i = 0; i < piece.moves.length; i++) {
+      freq = piece.moves[i].split('_')[1];
+      move = piece.moves[i].split('_')[0];
         if (freq == 'once') {
-          var moves = move.split('-');
-          for (var j = 0; j < moves.length; j++) {
+          potentialMove = curPos.slice(0);
+          moves = move.split('-');
+          for (j = 0; j < moves.length; j++) {
             if (moves[j] in xMoves) {
               potentialMove[1] += xMoves[moves[j]];
             }
@@ -160,19 +155,43 @@ function Chess() {
               potentialMove[0] += yMoves[moves[j]];
             }          
           }
-          var validation = this.validateMove(potentialMove, curPos);
+          validation = this.validateMove(potentialMove, curPos);
           if (validation.available) {
-            availableMoves.push([potentialMove, validation.targetPiece]);
+            availableMoves.push([potentialMove.slice(0), validation.targetPiece]);
           }
+       }
+       else if (freq == 'all') {
+         moves = move.split('-');
+         iterationComplete = false;
+         potentialMove = curPos.slice(0);
+         while (!iterationComplete) {
+           for (j = 0; j < moves.length; j++) {
+             if (moves[j] in xMoves) {
+               potentialMove[1] += xMoves[moves[j]];
+             }
+             else {
+               potentialMove[0] += yMoves[moves[j]];
+             }
+           }  
+           validation = this.validateMove(potentialMove, curPos);
+           if (validation.available) {
+             availableMoves.push([potentialMove.slice(0), validation.targetPiece]);
+           }
+           if (validation.end) {
+             iterationComplete = true;
+           }
+         }
        }
     }
 
     return availableMoves;
 
     if (piece.attackMoves == undefined) {
+      //TODO: check for king's ability to castle
       return ['not pawn', piece.pos];
     }
     else {
+      //TODO: Pawn special moves (first double move, en passant, attack)
       //TODO: check if opponent piece is in up-right or up-left position, add to available moves if so
       return ['pawn', piece.pos];
     }
