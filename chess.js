@@ -55,7 +55,7 @@ function Chess() {
   this.selectPiece = function(elId) {
     // called from engine.js 
     // board square was clicked
-    var piece, el, movePos = [], targetPiece = [], i;
+    var piece, el, movePos = [], targetPiece = [], i, specialMove = [];
     piece = this.getPieceFromBoardName(elId);
     this.resetBoardBorderColors();
     el = document.getElementById(elId);
@@ -79,12 +79,13 @@ function Chess() {
       for (i = 0; i < this.availableMoves.length; i++) {
         movePos.push(this.getBoardPosition(this.availableMoves[i][0][0], this.availableMoves[i][0][1]));
         targetPiece.push(this.availableMoves[i][1]);
+        specialMove.push(this.availableMoves[i][2]);
       }
       var index = movePos.indexOf(elId);
       if (index !== -1) {
         // available move for selected piece;
         //TODO: determine if this is a special move (castle) -- this has to be handled differently by the movePiece function
-        this.movePiece(this.selectedPiece, movePos[index], targetPiece[index]);
+        this.movePiece(this.selectedPiece, movePos[index], targetPiece[index], specialMove[index]);
         this.isPieceSelected = false;
         this.availableMoves = [];
         this.selectedPiece = undefined;
@@ -104,7 +105,7 @@ function Chess() {
     }
   };
 
-  this.movePiece = function(piece, newPos, targetPiece) {
+  this.movePiece = function(piece, newPos, targetPiece, specialMove) {
     var oldPos = piece.pos,
         newPosCoords = this.getBoardCoordsFromBoardName(newPos);
 
@@ -113,12 +114,50 @@ function Chess() {
     }
 
     piece.pos = newPosCoords;
+    piece.posName = newPos;
     this.board[oldPos[0]][oldPos[1]] = [];
     this.board[newPosCoords[0]][newPosCoords[1]] = piece;
     this.printBoard();
     this.changeTurns();
-    if (piece.nickname == 'P' || piece.nickname == 'R' || piece.nickname == 'K') {
-      piece.isFirstMove = false;
+
+    switch(piece.nickname) {
+      case 'P':
+        if (specialMove != undefined) this.handleSpecialMove(piece, specialMove);
+        piece.isFirstMove = false;
+        break;
+      case 'R':
+        piece.isFirstMove = false;
+        break;
+      case 'K':
+        piece.isFirstMove = false;
+        break;
+    }
+  };
+
+  this.handleSpecialMove = function(piece, specialMove) {
+    var moveName = specialMove.name,
+        pieceType = piece.nickname,
+        pos = piece.pos.slice(0),
+        tempPos = [], tempPiece;
+
+    switch(pieceType) {
+      case 'P': 
+        if (moveName == 'double-up'){
+          tempPos = [pos[0],pos[1]+1];
+          if (tempPos[1] >= 0 && tempPos[1] < 8) {
+            tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
+            if (tempPiece instanceof Piece && tempPiece.nickname == 'P')
+              tempPiece.enpassantLeft = true;
+              console.log(tempPiece);
+          }
+          tempPos = [pos[0],pos[1]-1];
+          if (tempPos[1] >= 0 && tempPos[1] < 8) {
+            tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
+            if (tempPiece instanceof Piece && tempPiece.nickname == 'P')
+              tempPiece.enpassantRight = true;
+              console.log(tempPiece);
+          }
+        }
     }
   };
 
@@ -161,6 +200,7 @@ function Chess() {
     for (i = 0; i < piece.moves.length; i++) {
       freq = piece.moves[i].split('_')[1];
       move = piece.moves[i].split('_')[0];
+
         if (freq == 'once') {
           potentialMove = curPos.slice(0);
           moves = move.split('-');
@@ -177,6 +217,7 @@ function Chess() {
             availableMoves.push([potentialMove.slice(0), validation.targetPiece]);
           }
        }
+
        else if (freq == 'all') {
          moves = move.split('-');
          iterationComplete = false;
@@ -199,6 +240,7 @@ function Chess() {
            }
          }
        }
+
        else if (freq == 'special' || freq == 'attack') {
          potentialMove = curPos.slice(0);
          specialMove = piece.specialMoves[move];
@@ -227,7 +269,6 @@ function Chess() {
     }
     else {
       //TODO: Pawn special moves (first double move, en passant, attack)
-      //TODO: check if opponent piece is in up-right or up-left position, add to available moves if so
       return ['pawn', piece.pos];
     }
   };
@@ -356,30 +397,35 @@ function Piece(piece, row, col, posName) {
       this.specialMoves = 
         {
           "double-up": {
+            name: "double-up",
             move: "up-up_once",
             condition: function(self, otherPiece) {
               return self.isFirstMove;
             }
           },
           "attack-left": {
+            name: "attack-left",
             move: "up-left_once",
             condition: function(self, otherPiece) {
               return otherPiece instanceof Piece && self.color !== otherPiece.color;
             }
           },
           "attack-right": {
+            name: "attack-right",
             move: "up-right_once",
             condition: function(self, otherPiece) {
               return otherPiece instanceof Piece && self.color !== otherPiece.color;            
             }
           },
           "enpassant-left": {
+            name: "enpassant-left",
             move: "up-left_once",
             condition: function() {
               return this.enpassantLeft;
             }
           },
           "enpassant-right": {
+            name: "enpassant-right",
             move: "up-right_once",
             condition: function() {
               return this.enpassantRight;
