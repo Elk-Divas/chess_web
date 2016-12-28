@@ -19,6 +19,10 @@ function Chess() {
     }
   };
 
+  this.changeTurns = function() {
+    this.colorTurn = this.colorTurn == 'White' ? 'Black' : 'White';
+  };
+
   this.getBoardPosition = function(y,x) {
     // returns the board position's name (a8, f5, etc)
     // yNames are only increased by 1
@@ -48,16 +52,14 @@ function Chess() {
     // called from engine.js 
     // board square was clicked
     var piece, el, movePos = [], targetPiece = [], i;
-
-    this.resetBoardBorderColors();
     piece = this.getPieceFromBoardName(elId);
+    this.resetBoardBorderColors();
     el = document.getElementById(elId);
 
-    console.log(piece.posName);
+    if (!this.isPieceSelected && piece.color != this.colorTurn) return;
+    
     if (!this.isPieceSelected) {
-      //TODO: check if piece is right color
       // Selecting a Piece 
-      
       if (piece === 'empty') return;
       else {
         el.style.border = '2px solid green';
@@ -110,6 +112,10 @@ function Chess() {
     this.board[oldPos[0]][oldPos[1]] = [];
     this.board[newPosCoords[0]][newPosCoords[1]] = piece;
     this.printBoard();
+    this.changeTurns();
+    if (piece.nickname == 'P' || piece.nickname == 'R' || piece.nickname == 'K') {
+      piece.isFirstMove = false;
+    }
   };
 
   this.resetBoardBorderColors = function() {
@@ -227,7 +233,6 @@ function Chess() {
     switch(pieceType) {
       case "P":
         if(obj.specialMove.condition(obj.piece, obj.validation.targetPiece)) {
-          obj.piece.isFirstMove = false;
           return true;
           break;
         }
@@ -284,6 +289,7 @@ function Chess() {
     this.isPieceSelected = false;
     this.selectedPiece = undefined;
     this.isKingInCheck = false;
+    this.colorTurn = 'White';
 
     // Build the empty board array
     for (var i = 0; i < 8; i++) {
