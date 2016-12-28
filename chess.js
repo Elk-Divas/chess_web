@@ -7,8 +7,7 @@ function Chess() {
         var pos = this.getBoardPosition(i, j);
         el = document.getElementById(pos);
         el.innerHTML = ' '//(this.board[i][j].nickname || ' ');
-        el.style.color = this.board[i][j].color;
-        if (this.board[i][j].color != undefined) {
+        if (this.board[i][j] instanceof Piece) {
           el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
           el.style.backgroundRepeat = 'no-repeat';
           el.style.backgroundPosition = 'center center';
