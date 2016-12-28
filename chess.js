@@ -6,8 +6,16 @@ function Chess() {
       for (var j = 0; j < 8; j++) {
         var pos = this.getBoardPosition(i, j);
         el = document.getElementById(pos);
-        el.innerHTML = (this.board[i][j].nickname || ' ');
+        el.innerHTML = ' '//(this.board[i][j].nickname || ' ');
         el.style.color = this.board[i][j].color;
+        if (this.board[i][j].color != undefined) {
+          el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
+          el.style.backgroundRepeat = 'no-repeat';
+          el.style.backgroundPosition = 'center center';
+        }
+        else {
+          el.style.backgroundImage = '';
+        }
       }
     }
   };
@@ -310,6 +318,8 @@ function Piece(piece, row, col) {
             condition: this.enpessantRight
           }
         };
+      this.darkImage = "images/Chess_pdt60.png";
+      this.lightImage = "images/Chess_plt60.png";
       break;
     case "N": 
       this.name = "Knight";
@@ -319,6 +329,8 @@ function Piece(piece, row, col) {
       this.isPinnedToKing = false;
       this.isInGame = true;
       this.isProtected = false;
+      this.darkImage = "images/Chess_ndt60.png";
+      this.lightImage = "images/Chess_nlt60.png";
       break;
     case "B":
       this.name = "Bishop";
@@ -327,6 +339,8 @@ function Piece(piece, row, col) {
       this.isPinnedToKing = false;
       this.isInGame = true;
       this.isProtected = false;
+      this.darkImage = "images/Chess_bdt60.png";
+      this.lightImage = "images/Chess_blt60.png";
       break;
     case "R":
       this.name = "Rook";
@@ -336,6 +350,8 @@ function Piece(piece, row, col) {
       this.isInGame = true;
       this.isProtected = false;
       this.isFirstMove = true;
+      this.darkImage = "images/Chess_rdt60.png";
+      this.lightImage = "images/Chess_rlt60.png";
       break;
     case "Q":
       this.name = "Queen";
@@ -344,6 +360,8 @@ function Piece(piece, row, col) {
       this.isPinnedToKing = false;
       this.isInGame = true;
       this.isProtected = false;
+      this.darkImage = "images/Chess_qdt60.png";
+      this.lightImage = "images/Chess_qlt60.png";
       break;
     case "K":
       this.name = "King";
@@ -351,6 +369,8 @@ function Piece(piece, row, col) {
       this.moves = ["up_once", "down_once", "left_once", "right_once", "up-right_once", "up-left_once", "down-right_once", "down-left_once"];
       this.isFirstMove = true;
       this.isInGame = true;
+      this.darkImage = "images/Chess_kdt60.png";
+      this.lightImage = "images/Chess_klt60.png";
       break;
   }
 }
