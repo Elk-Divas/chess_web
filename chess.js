@@ -2,7 +2,7 @@ function Chess() {
   //Main Chess Game Class
   
   //TODO: Add castling functionality
-  //TODO: Add en passant functionality
+  //TODO: Add final enpassant functionality: global boolean in order to ensure enpassant can only occur for one move
   //TODO: Add list of moves to a moveHistory array 
   //TODO: Add undo functionality
 
@@ -11,7 +11,7 @@ function Chess() {
       for (var j = 0; j < 8; j++) {
         var pos = this.getBoardPosition(i, j);
         el = document.getElementById(pos);
-        if (this.board[i][j] instanceof Piece) {
+        if (this.board[i][j] instanceof Piece && this.board[i][j].isInGame) {
           el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
           el.style.backgroundRepeat = 'no-repeat';
           el.style.backgroundPosition = 'center center';
@@ -117,8 +117,6 @@ function Chess() {
     piece.posName = newPos;
     this.board[oldPos[0]][oldPos[1]] = [];
     this.board[newPosCoords[0]][newPosCoords[1]] = piece;
-    this.printBoard();
-    this.changeTurns();
 
     switch(piece.nickname) {
       case 'P':
@@ -132,6 +130,8 @@ function Chess() {
         piece.isFirstMove = false;
         break;
     }
+    this.printBoard();
+    this.changeTurns();
   };
 
   this.handleSpecialMove = function(piece, specialMove) {
@@ -148,16 +148,26 @@ function Chess() {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P')
               tempPiece.enpassantLeft = true;
-              console.log(tempPiece);
           }
           tempPos = [pos[0],pos[1]-1];
           if (tempPos[1] >= 0 && tempPos[1] < 8) {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P')
               tempPiece.enpassantRight = true;
-              console.log(tempPiece);
           }
         }
+        else if (moveName == 'enpassant-right' || moveName == 'enpassant-left') {
+          tempPos = [pos[0]-1,pos[1]]
+          if (tempPos[0] >= 0 && tempPos[0] < 8) {
+            tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
+            if (tempPiece instanceof Piece && tempPiece.nickname == 'P') {
+              tempPiece.isInGame = false;
+              piece.enpassantRight = false;
+              piece.enpassantLeft = false;
+            }
+          }
+        }
+        break;
     }
   };
 
@@ -420,15 +430,15 @@ function Piece(piece, row, col, posName) {
           "enpassant-left": {
             name: "enpassant-left",
             move: "up-left_once",
-            condition: function() {
-              return this.enpassantLeft;
+            condition: function(self, otherPiece) {
+              return self.enpassantLeft;
             }
           },
           "enpassant-right": {
             name: "enpassant-right",
             move: "up-right_once",
-            condition: function() {
-              return this.enpassantRight;
+            condition: function(self, otherPiece) {
+              return self.enpassantRight;
             }
           }
         };
