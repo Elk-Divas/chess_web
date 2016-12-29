@@ -187,6 +187,7 @@ function Chess() {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P') {
               tempPiece.isInGame = false;
+              this.board[tempPiece.pos[0]][tempPiece.pos[1]] = [];
               this.isEnpassant = false;
               piece.enpassantRight = false;
               piece.enpassantLeft = false;
