@@ -3,6 +3,7 @@ function Chess() {
   
   //TODO: Add castling functionality
   //TODO: Add list of moves to a moveHistory array 
+  //TODO: Add gameState object to hold all global booleans -- this will be necessary for the moveHistory array and undo functionality
   //TODO: Add undo functionality
 
   this.printBoard = function() {
