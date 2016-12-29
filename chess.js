@@ -2,7 +2,6 @@ function Chess() {
   //Main Chess Game Class
   
   //TODO: Add castling functionality
-  //TODO: Add final enpassant functionality: global boolean in order to ensure enpassant can only occur for one move
   //TODO: Add list of moves to a moveHistory array 
   //TODO: Add undo functionality
 
@@ -11,6 +10,7 @@ function Chess() {
       for (var j = 0; j < 8; j++) {
         var pos = this.getBoardPosition(i, j);
         el = document.getElementById(pos);
+        el.style.border = '2px solid black';
         if (this.board[i][j] instanceof Piece && this.board[i][j].isInGame) {
           el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
           el.style.backgroundRepeat = 'no-repeat';
@@ -49,6 +49,10 @@ function Chess() {
   };
 
   this.getPieceFromCoords = function(y, x) {
+    if (Object.prototype.toString.call(y) === '[object Array]' && x == undefined) {
+      // if an array was given
+      x = y[1], y = y[0]
+    }
     return this.getPieceFromBoardName(this.getBoardPosition(y,x));
   };
 
@@ -105,6 +109,20 @@ function Chess() {
     }
   };
 
+  this.resetEnpassant = function() {
+    this.isEnpassant = false;
+
+    for (var i = 0; i < 8; i++) {
+      for (var j = 0; j < 8; j++) {
+        var piece = this.getPieceFromCoords([i, j]);
+        if (piece.nickname == 'P') {
+          piece.enpassantRight = false;
+          piece.enpassantLeft = false;
+        }
+      }
+    }
+  };
+
   this.movePiece = function(piece, newPos, targetPiece, specialMove) {
     var oldPos = piece.pos,
         newPosCoords = this.getBoardCoordsFromBoardName(newPos);
@@ -112,6 +130,8 @@ function Chess() {
     if (targetPiece !== undefined) {
       targetPiece.isInGame = false;
     }
+
+    if (this.isEnpassant) this.resetEnpassant();
 
     piece.pos = newPosCoords;
     piece.posName = newPos;
@@ -143,25 +163,31 @@ function Chess() {
     switch(pieceType) {
       case 'P': 
         if (moveName == 'double-up'){
+          // checking if opponent can En Passant Left
           tempPos = [pos[0],pos[1]+1];
           if (tempPos[1] >= 0 && tempPos[1] < 8) {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P')
+              this.isEnpassant = true;
               tempPiece.enpassantLeft = true;
           }
+          // checking if opponent can En Passant Right
           tempPos = [pos[0],pos[1]-1];
           if (tempPos[1] >= 0 && tempPos[1] < 8) {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P')
+              this.isEnpassant = true;
               tempPiece.enpassantRight = true;
           }
         }
         else if (moveName == 'enpassant-right' || moveName == 'enpassant-left') {
+          // handling En Passant attack
           tempPos = [pos[0]-1,pos[1]]
           if (tempPos[0] >= 0 && tempPos[0] < 8) {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P') {
               tempPiece.isInGame = false;
+              this.isEnpassant = false;
               piece.enpassantRight = false;
               piece.enpassantLeft = false;
             }
@@ -344,6 +370,7 @@ function Chess() {
     this.isPieceSelected = false;
     this.selectedPiece = undefined;
     this.isKingInCheck = false;
+    this.isEnpassant = false;
     this.colorTurn = 'White';
 
     // Build the empty board array
