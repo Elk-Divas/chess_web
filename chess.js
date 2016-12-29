@@ -18,6 +18,7 @@ function Chess() {
         }
         else {
           el.style.backgroundImage = '';
+          this.board[i][j] = [];
         }
       }
     }
@@ -111,7 +112,6 @@ function Chess() {
 
   this.resetEnpassant = function() {
     this.isEnpassant = false;
-
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 8; j++) {
         var piece = this.getPieceFromCoords([i, j]);
@@ -158,7 +158,8 @@ function Chess() {
     var moveName = specialMove.name,
         pieceType = piece.nickname,
         pos = piece.pos.slice(0),
-        tempPos = [], tempPiece;
+        tempPos = [], tempPiece,
+        upDown = piece.color == 'White' ? {up:1, down:-1} : {up:-1, down:1};
 
     switch(pieceType) {
       case 'P': 
@@ -182,11 +183,12 @@ function Chess() {
         }
         else if (moveName == 'enpassant-right' || moveName == 'enpassant-left') {
           // handling En Passant attack
-          tempPos = [pos[0]-1,pos[1]]
+          tempPos = [pos[0]+upDown.down,pos[1]]
           if (tempPos[0] >= 0 && tempPos[0] < 8) {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P') {
               tempPiece.isInGame = false;
+              this.board[tempPos[0]][tempPos[1]] = [];
               this.isEnpassant = false;
               piece.enpassantRight = false;
               piece.enpassantLeft = false;
@@ -364,6 +366,9 @@ function Chess() {
     return returnValue;
   };
 
+  this.checkForThreat = function() {
+
+  };
   this.init = function() {
     this.board = new Array(); // Array to hold board positions
     this.availableMoves = new Array(); 
@@ -517,11 +522,39 @@ function Piece(piece, row, col, posName) {
     case "K":
       this.name = "King";
       this.nickname = "K";
-      this.moves = ["up_once", "down_once", "left_once", "right_once", "up-right_once", "up-left_once", "down-right_once", "down-left_once"];
+      this.moves = ["up_once", "down_once", "left_once", "right_once", "up-right_once", "up-left_once", "down-right_once", 
+      "down-left_once", "kingside-castle_special", "queenside-castle_special"];
       this.isFirstMove = true;
       this.isInGame = true;
       this.darkImage = "images/Chess_kdt60.png";
       this.lightImage = "images/Chess_klt60.png";
+      this.specialMoves = 
+      {
+        "kingside-castle": {
+          name: "kingside-castle",
+          move: "right-right_once",
+          condition: function(self, chess, checkForThreat) {
+            return 
+              (!chess.isKingInCheck 
+              && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+1) == 'empty') 
+              && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+2) == 'empty') 
+              && (!checkForThreat(chess.board[self.pos[0]][self.pos[1]+1])) 
+              && (!checkForThreat(chess.board[self.pos[0]][self.pos[1]+2])))
+          }
+        },
+        "queenside-castle": {
+          name: "queenside-castle",
+          move: "left-left_once",
+          condition: function(self, chess, checkForThreat) {
+            return 
+              (!chess.isKingInCheck 
+              && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-1) == 'empty') 
+              && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-2) == 'empty') 
+              && (!checkForThreat([self.pos[0], self.pos[1]-1])) 
+              && (!checkForThreat([self.pos[0], self.pos[1]-2])))
+          }
+        }
+      }
       break;
   }
 }
