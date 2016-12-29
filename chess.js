@@ -5,6 +5,7 @@ function Chess() {
   //TODO: Add list of moves to a moveHistory array 
   //TODO: Add gameState object to hold all global booleans -- this will be necessary for the moveHistory array and undo functionality
   //TODO: Add undo functionality
+  //TODO: Add pawn upgrade functionality when reaching other side of the board
 
   this.printBoard = function() {
     for (var i = 0; i < 8; i++) {
