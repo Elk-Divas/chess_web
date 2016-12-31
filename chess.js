@@ -149,6 +149,7 @@ function Chess() {
         piece.isFirstMove = false;
         break;
       case 'K':
+        if (specialMove != undefined) this.handleSpecialMove(piece, specialMove, oldPos);
         piece.isFirstMove = false;
         break;
     }
@@ -156,7 +157,7 @@ function Chess() {
     this.changeTurns();
   };
 
-  this.handleSpecialMove = function(piece, specialMove) {
+  this.handleSpecialMove = function(piece, specialMove, oldPos) {
     var moveName = specialMove.name,
         pieceType = piece.nickname,
         pos = piece.pos.slice(0),
@@ -185,7 +186,7 @@ function Chess() {
         }
         else if (moveName == 'enpassant-right' || moveName == 'enpassant-left') {
           // handling En Passant attack
-          tempPos = [pos[0]+upDown.down,pos[1]]
+          tempPos = [pos[0]+upDown.down,pos[1]];
           if (tempPos[0] >= 0 && tempPos[0] < 8) {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P') {
@@ -194,6 +195,30 @@ function Chess() {
               this.isEnpassant = false;
               piece.enpassantRight = false;
               piece.enpassantLeft = false;
+            }
+          }
+        }
+        break;
+      case 'K':
+        if (moveName == 'kingside-castle') {
+          tempPos = [oldPos[0], oldPos[1]+3];
+          if (tempPos[1] >= 0 && tempPos[1] < 8) {
+            tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
+            if (tempPiece instanceof Piece && tempPiece.nickname == 'R') {
+              this.board[tempPos[0]][tempPos[1]] = [];
+              this.board[oldPos[0]][oldPos[1]+1] = tempPiece;
+              tempPiece.isFirstMove = false;
+            }
+          }
+        }
+        else if (moveName == 'queenside-castle') {
+          tempPos = [oldPos[0], oldPos[1]-4];
+          if (tempPos[1] >= 0 && tempPos[1] < 8) {
+            tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
+            if (tempPiece instanceof Piece && tempPiece.nickname == 'R') {
+              this.board[tempPos[0]][tempPos[1]] = [];
+              this.board[oldPos[0]][oldPos[1]-1] = tempPiece;
+              tempPiece.isFirstMove = false;
             }
           }
         }
@@ -319,8 +344,13 @@ function Chess() {
       case "P":
         if(obj.specialMove.condition(obj.piece, obj.validation.targetPiece)) {
           return true;
-          break;
         }
+        break;
+      case "K":
+        if(obj.specialMove.condition(obj.piece, this)) {
+          return true;
+        }
+        break;
     }
   };
 
@@ -368,9 +398,17 @@ function Chess() {
     return returnValue;
   };
 
-  this.checkForThreat = function() {
-
+  this.checkForThreat = function(coords) {
+    var pieceInPos = this.getPieceFromCoords(coords);
+    if (pieceInPos == 'empty') {
+      //TODO: check for any threats to this piece, return {threat:threatBoolean, piece:piece}
+    }
+    else {
+      //TODO: check for any threats to this location , return {threat:threatBoolean, piece:undefined}
+    }
+    return false; //TODO: will not be needed when fully implemented
   };
+
   this.init = function() {
     this.board = new Array(); // Array to hold board positions
     this.availableMoves = new Array(); 
@@ -535,28 +573,30 @@ function Piece(piece, row, col, posName) {
         "kingside-castle": {
           name: "kingside-castle",
           move: "right-right_once",
-          condition: function(self, chess, checkForThreat) {
-            return 
-              (!chess.isKingInCheck 
-              && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+1) == 'empty') 
-              && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+2) == 'empty') 
-              && (!checkForThreat(chess.board[self.pos[0]][self.pos[1]+1])) 
-              && (!checkForThreat(chess.board[self.pos[0]][self.pos[1]+2])))
+          condition: function(self, chess) {
+            if (self.pos[1] + 3 <= 7 && self.pos[1] - 4 >= 0) {
+              var rook = chess.getPieceFromCoords(self.pos[0], self.pos[1]+3);          
+              return (self.isFirstMove && !chess.isKingInCheck && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+1) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+2) == 'empty') && (!chess.checkForThreat([self.pos[0],self.pos[1]+1])) && (!chess.checkForThreat([self.pos[0],self.pos[1]+2])) && rook.isFirstMove && rook.name == 'Rook');
+            }
+            else {
+              return false;
+            }
           }
         },
         "queenside-castle": {
           name: "queenside-castle",
           move: "left-left_once",
-          condition: function(self, chess, checkForThreat) {
-            return 
-              (!chess.isKingInCheck 
-              && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-1) == 'empty') 
-              && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-2) == 'empty') 
-              && (!checkForThreat([self.pos[0], self.pos[1]-1])) 
-              && (!checkForThreat([self.pos[0], self.pos[1]-2])))
+          condition: function(self, chess) {
+            if (self.pos[1] + 3 <= 7 && self.pos[1] - 4 >= 0) {
+              var rook = chess.getPieceFromCoords(self.pos[0], self.pos[1]-4);          
+              return (self.isFirstMove && !chess.isKingInCheck && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-1) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-2) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-3) == 'empty') && (!chess.checkForThreat([self.pos[0],self.pos[1]-1])) && (!chess.checkForThreat([self.pos[0],self.pos[1]-2])) && (!chess.checkForThreat([self.pos[0],self.pos[1]-3])) && rook.isFirstMove && rook.name == 'Rook');
+            }
+            else {
+              return false;
+            }
           }
         }
-      }
+      };
       break;
   }
 }
