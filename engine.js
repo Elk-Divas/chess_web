@@ -7,5 +7,8 @@
     this.chess.init();
     this.chess.printBoard();
   };
+  this.undo = function() {
+    this.chess.undo();
+  };
   this.newGame();
 })(window);
