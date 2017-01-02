@@ -67,6 +67,7 @@ function Chess() {
     // board square was clicked
     var piece, el, movePos = [], targetPiece = [], i, specialMove = [];
     piece = this.getPieceFromBoardName(elId);
+    console.log(piece);
     this.resetBoardBorderColors();
     el = document.getElementById(elId);
 
@@ -186,8 +187,7 @@ function Chess() {
       historyState:         historyState,
       piece:                piece,
       targetPiece:          targetPiece,
-      colorTurn:            this.colorTurn,
-      test:                 console.log(this.gameState)
+      colorTurn:            this.colorTurn
     });
 
     this.printBoard();
@@ -210,7 +210,6 @@ function Chess() {
           if (tempPos[1] >= 0 && tempPos[1] < 8) {
             tempPiece = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece instanceof Piece && tempPiece.nickname == 'P' && tempPiece.color !== color) {
-              //console.log(tempPiece.color, piece.color);
               this.isEnpassant = true;
               tempPiece.enpassantLeft = true;
             }
@@ -220,7 +219,6 @@ function Chess() {
           if (tempPos[1] >= 0 && tempPos[1] < 8) {
             tempPiece2 = this.getPieceFromCoords(tempPos[0], tempPos[1]);
             if (tempPiece2 instanceof Piece && tempPiece2.nickname == 'P' && tempPiece2.color !== color) {
-              //console.log(tempPiece2.color, piece.color);
               this.isEnpassant = true;
               tempPiece2.enpassantRight = true;
             }
@@ -480,7 +478,6 @@ function Chess() {
     if (!!lastMove.historyState.isEnpassant) {
       this.isEnpassant = true;
       var historyState = this.gameState.moveHistory[this.gameState.moveHistory.length - 1].historyState;
-      console.log(historyState);
       for (p in historyState) {
         var obj = historyState[p];
         var objPiece = obj.piece;
@@ -501,7 +498,7 @@ function Chess() {
         if (checkCoords) {
           var tempPiece = this.getPieceFromCoords(checkCoords);
           lastMove.piece.enpassantLeft = true; 
-          if (tempPiece instanceof Piece && tempPiece.nickname == 'P') {
+          if (tempPiece instanceof Piece && tempPiece.nickname == 'P' && tempPiece.color == lastMove.piece.color) {
             tempPiece.enpassantRight = true;
           }
         }
@@ -512,7 +509,7 @@ function Chess() {
         if (checkCoords) {
           var tempPiece = this.getPieceFromCoords(checkCoords);
           lastMove.piece.enpassantRight = true;
-          if (tempPiece instanceof Piece && tempPiece.nickname == 'P') {
+          if (tempPiece instanceof Piece && tempPiece.nickname == 'P' && tempPiece.color == lastMove.piece.color) {
             tempPiece.enpassantLeft = true;
           }
         }
@@ -532,7 +529,6 @@ function Chess() {
         rook.pos = [rook.pos[0], rook.pos[1]+rookDisplace]; 
         rook.posName = this.getBoardPosition(rook.pos[0], rook.pos[1]);
         this.board[rook.pos[0]][rook.pos[1]] = rook;
-        console.log(rook, rook.pos);
       }
     }
 
