@@ -67,7 +67,6 @@ function Chess() {
     // board square was clicked
     var piece, el, movePos = [], targetPiece = [], i, specialMove = [];
     piece = this.getPieceFromBoardName(elId);
-    console.log(piece);
     this.resetBoardBorderColors();
     el = document.getElementById(elId);
 
@@ -192,6 +191,7 @@ function Chess() {
 
     this.printBoard();
     this.changeTurns();
+    this.evaluateBoard();
   };
 
   this.handleSpecialMove = function(piece, specialMove, oldPos) {
@@ -372,17 +372,7 @@ function Chess() {
           }
        }
     }
-
     return availableMoves;
-
-    if (piece.attackMoves == undefined) {
-      //TODO: check for king's ability to castle
-      return ['not pawn', piece.pos];
-    }
-    else {
-      //TODO: Pawn special moves (first double move, en passant, attack)
-      return ['pawn', piece.pos];
-    }
   };
 
   this.checkSpecialCondition = function(obj) {
@@ -445,15 +435,42 @@ function Chess() {
     return returnValue;
   };
 
-  this.checkForThreat = function(coords) {
+  this.checkForThreat = function(coords, color) {
     var pieceInPos = this.getPieceFromCoords(coords);
+    console.log(color);
     if (pieceInPos == 'empty') {
-      //TODO: check for any threats to this piece, return {threat:threatBoolean, piece:piece}
+      //TODO: check for any threats to this location, return {threat:threatBoolean, attacker: attackingPiece, piece:undefined, plane: xplane/yplane/x+yplane};
+      // cycle through all board pieces (if color differs from the color parameter) and see if any of those pieces have access to these coords
     }
     else {
-      //TODO: check for any threats to this location , return {threat:threatBoolean, piece:undefined}
+      //TODO: check for any threats to this piece, return {threat:threatBoolean, attacker: attackingPiece, piece:pieceInPos, plane: xplane/yplane/x+yplane};
+      // cycle through all board pieces (if color differs from the color parameter) and see if any of those pieces have access to these coords
+      for (var i = 0; i < 8; i++) {
+        for (var j = 0; j < 8; j++) {
+          var attackingPiece = this.getPieceFromCoords([i,j]);
+          if (attackingPiece == 'empty' || attackingPiece.color == color) break;
+          else {
+            var moves;
+            moves = this.getAvailableMoves(attackingPiece);
+            moves.forEach(function(move) {
+              if (move[1] !== undefined  && move[1].color === color && move[1].nickname == 'K') {
+                console.log('CHECK!');
+              }
+            });
+          }
+        }
+      }
     }
     return false; //TODO: will not be needed when fully implemented
+  };
+
+  this.evaluateBoard = function() {
+    for (var i = 0; i < 8; i++) {
+      for (var j = 0; j < 8; j++) {
+        var pos = [i,j];
+        this.checkForThreat(pos, this.colorTurn);
+      }
+    }
   };
   
   this.undo = function() {
@@ -712,7 +729,7 @@ function Piece(piece, row, col, posName) {
           condition: function(self, chess) {
             if (self.pos[1] + 3 <= 7 && self.pos[1] - 4 >= 0) {
               var rook = chess.getPieceFromCoords(self.pos[0], self.pos[1]+3);          
-              return (self.isFirstMove && !chess.isKingInCheck && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+1) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+2) == 'empty') && (!chess.checkForThreat([self.pos[0],self.pos[1]+1])) && (!chess.checkForThreat([self.pos[0],self.pos[1]+2])) && rook.isFirstMove && rook.name == 'Rook');
+              return (self.isFirstMove && !chess.isKingInCheck && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+1) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]+2) == 'empty') && (!chess.checkForThreat([self.pos[0],self.pos[1]+1], self.color)) && (!chess.checkForThreat([self.pos[0],self.pos[1]+2], self.color)) && rook.isFirstMove && rook.name == 'Rook');
             }
             else {
               return false;
@@ -725,7 +742,7 @@ function Piece(piece, row, col, posName) {
           condition: function(self, chess) {
             if (self.pos[1] + 3 <= 7 && self.pos[1] - 4 >= 0) {
               var rook = chess.getPieceFromCoords(self.pos[0], self.pos[1]-4);          
-              return (self.isFirstMove && !chess.isKingInCheck && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-1) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-2) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-3) == 'empty') && (!chess.checkForThreat([self.pos[0],self.pos[1]-1])) && (!chess.checkForThreat([self.pos[0],self.pos[1]-2])) && (!chess.checkForThreat([self.pos[0],self.pos[1]-3])) && rook.isFirstMove && rook.name == 'Rook');
+              return (self.isFirstMove && !chess.isKingInCheck && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-1) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-2) == 'empty') && (chess.getPieceFromCoords(self.pos[0],self.pos[1]-3) == 'empty') && (!chess.checkForThreat([self.pos[0],self.pos[1]-1], self.color)) && (!chess.checkForThreat([self.pos[0],self.pos[1]-2], self.color)) && (!chess.checkForThreat([self.pos[0],self.pos[1]-3], self.color)) && rook.isFirstMove && rook.name == 'Rook');
             }
             else {
               return false;
