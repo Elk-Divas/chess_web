@@ -1,9 +1,6 @@
 function Chess() {
   //Main Chess Game Class
   
-  //TODO: Add list of moves to a moveHistory array 
-  //TODO: Add gameState object to hold all global booleans -- this will be necessary for the moveHistory array and undo functionality
-  //TODO: Add undo functionality
   //TODO: Add pawn upgrade functionality when reaching other side of the board
 
   this.printBoard = function() {
@@ -453,8 +450,8 @@ function Chess() {
 
   this.checkForThreat = function(coords, color) {
     var returnValue = {threatBool: false, attacker: undefined, piece: undefined, kingCheck: false};
-
     if (!!coords) { 
+      console.log(coords);
       var pieceInPos = this.getPieceFromCoords(coords);
         for (var i = 0; i < 8; i++) {
           for (var j = 0; j < 8; j++) {
@@ -539,22 +536,22 @@ function Chess() {
       this.board[lastMove.specialMoveResults.pos[0]][lastMove.specialMoveResults.pos[1]] = lastMove.specialMoveResults;
       lastMove.specialMoveResults.isInGame = true;
       if (lastMove.specialMove.name == 'enpassant-left') {
+        lastMove.piece.enpassantLeft = true; 
         var tempCoords = lastMove.from;
         var checkCoords = this.validateCoords(tempCoords[0], tempCoords[1] - 2);
         if (checkCoords) {
           var tempPiece = this.getPieceFromCoords(checkCoords);
-          lastMove.piece.enpassantLeft = true; 
           if (tempPiece instanceof Piece && tempPiece.nickname == 'P' && tempPiece.color == lastMove.piece.color) {
             tempPiece.enpassantRight = true;
           }
         }
       }    
       else {
+        lastMove.piece.enpassantRight = true;
         var tempCoords = lastMove.from;
-        var checkCoords = this.validateCoords(tempCoords[0], tempCoords[1] - 2);
+        var checkCoords = this.validateCoords(tempCoords[0], tempCoords[1] + 2);
         if (checkCoords) {
           var tempPiece = this.getPieceFromCoords(checkCoords);
-          lastMove.piece.enpassantRight = true;
           if (tempPiece instanceof Piece && tempPiece.nickname == 'P' && tempPiece.color == lastMove.piece.color) {
             tempPiece.enpassantLeft = true;
           }
@@ -564,103 +561,11 @@ function Chess() {
 
     if (!!lastMove.historyState['kingside-castle'] || !!lastMove.historyState['queenside-castle']) {
       var rookDisplace = lastMove.historyState['kingside-castle'] !== undefined ? 2 : -3,
-          king, rook, lastMove;
+          king, rook, last;
       for (var p in lastMove.historyState) {
-        lastMove = lastMove.historyState[p];
-        rook = lastMove.rook;
-        king = lastMove.king;
-        king.isFirstMove = true;
-        rook.isFirstMove = true;
-        this.board[rook.pos[0]][rook.pos[1]] = [];
-        rook.pos = [rook.pos[0], rook.pos[1]+rookDisplace]; 
-        rook.posName = this.getBoardPosition(rook.pos[0], rook.pos[1]);
-        this.board[rook.pos[0]][rook.pos[1]] = rook;
-      }
-    }
-
-    this.printBoard();
-  };
-
-  this.validateCoords = function(y, x) {
-    return y >= 0 && y < 8 && x >= 0 && x < 8 ? [y, x] : undefined;
-  };
-
-  this.evaluateBoard = function() {
-    for (var i = 0; i < 8; i++) {
-      for (var j = 0; j < 8; j++) {
-        var pos = [i,j];
-        this.checkForThreat(pos, this.colorTurn);
-      }
-    }
-  };
-  
-  this.undo = function() {
-    if (this.gameState.moveHistory.length <= 0) return;
-    this.selectedPiece = undefined;
-    this.isPieceSelected = false;
-    var lastMove = this.gameState.moveHistory.pop();
-
-    lastMove.piece.pos = lastMove.from;
-    lastMove.piece.posName = this.getBoardPosition(lastMove.from);
-    lastMove.piece.isFirstMove = lastMove.isFirstMove;
-
-    this.board[lastMove.from[0]][lastMove.from[1]] = lastMove.piece;
-    this.board[lastMove.to[0]][lastMove.to[1]] = [];
-    this.colorTurn = lastMove.colorTurn;
-
-    if (lastMove.targetPiece != undefined) {
-      lastMove.targetPiece.isInGame = true;
-      this.board[lastMove.targetPiece.pos[0]][lastMove.targetPiece.pos[1]] = lastMove.targetPiece;
-    }
-
-    if (!!lastMove.historyState.isEnpassant) {
-      this.isEnpassant = true;
-      var historyState = this.gameState.moveHistory[this.gameState.moveHistory.length - 1].historyState;
-      for (p in historyState) {
-        var obj = historyState[p];
-        var objPiece = obj.piece;
-        objPiece[p] = historyState[p].bool;
-      }
-    }
-
-    else if (!!lastMove.historyState.enpassantRight || !!lastMove.historyState.enpassantLeft) {
-      this.resetEnpassant();
-    }
-
-    if (lastMove.specialMove !== undefined && (lastMove.specialMove.name == 'enpassant-left' || lastMove.specialMove.name == 'enpassant-right')) {
-      this.board[lastMove.specialMoveResults.pos[0]][lastMove.specialMoveResults.pos[1]] = lastMove.specialMoveResults;
-      lastMove.specialMoveResults.isInGame = true;
-      if (lastMove.specialMove.name == 'enpassant-left') {
-        var tempCoords = lastMove.from;
-        var checkCoords = this.validateCoords(tempCoords[0], tempCoords[1] - 2);
-        if (checkCoords) {
-          var tempPiece = this.getPieceFromCoords(checkCoords);
-          lastMove.piece.enpassantLeft = true; 
-          if (tempPiece instanceof Piece && tempPiece.nickname == 'P' && tempPiece.color == lastMove.piece.color) {
-            tempPiece.enpassantRight = true;
-          }
-        }
-      }    
-      else {
-        var tempCoords = lastMove.from;
-        var checkCoords = this.validateCoords(tempCoords[0], tempCoords[1] - 2);
-        if (checkCoords) {
-          var tempPiece = this.getPieceFromCoords(checkCoords);
-          lastMove.piece.enpassantRight = true;
-          if (tempPiece instanceof Piece && tempPiece.nickname == 'P' && tempPiece.color == lastMove.piece.color) {
-            tempPiece.enpassantLeft = true;
-          }
-        }
-      }
-    }
-
-    if (!!lastMove.historyState['kingside-castle'] || !!lastMove.historyState['queenside-castle']) {
-      var rookDisplace = lastMove.historyState['kingside-castle'] !== undefined ? 2 : -3,
-          king, rook, lastMove;
-      for (var p in lastMove.historyState) {
-        lastMove = lastMove.historyState[p];
-        rook = lastMove.rook;
-        king = lastMove.king;
+        last = lastMove.historyState[p];
+        rook = last.rook;
+        king = last.king;
         king.isFirstMove = true;
         rook.isFirstMove = true;
         this.board[rook.pos[0]][rook.pos[1]] = [];
