@@ -8,6 +8,7 @@
     this.chess.printBoard();
   };
   this.undo = function() {
+    console.log('here');
     this.chess.undo();
   };
   this.togglePieceLogging = function() {

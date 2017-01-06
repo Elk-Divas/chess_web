@@ -160,6 +160,7 @@ function Chess() {
     }
     this.printBoard();
     this.changeTurns();
+    this.evaluateBoard();
   };
 
   this.handleSpecialMove = function(piece, specialMove, oldPos) {
@@ -249,11 +250,12 @@ function Chess() {
     }
   };
 
-  this.getAvailableMoves = function(piece) {
+  this.getAvailableMoves = function(piece, attackThreatsOnly) {
     var curPos = piece.pos.slice(0);
     var color = piece.color;
     var availableMoves = []; // [[[row,col], targetPiece], [[row,col], targetPiece]];
     var up, down, xMoves, yMoves, freq, move, potentialMove, moves, validation, i, j, iterationComplete, specialMove;
+    if (attackThreatsOnly == undefined) attackThreatsOnly = false;
 
     if (color == 'White') {
       up = 1,
@@ -318,29 +320,27 @@ function Chess() {
          for (j = 0; j < moves.length; j++) {
            if (moves[j] in xMoves) {
              potentialMove[1] += xMoves[moves[j]];
-            }
+           }
            else {
              potentialMove[0] += yMoves[moves[j]];
-            }
-          }
+           }
+         }
          validation = this.validateMove(potentialMove, curPos, freq);
          var validationPack = {piece: piece, specialMove: specialMove, potentialMove: potentialMove.slice(0), validation: validation};
-         if (validation.available && this.checkSpecialCondition(validationPack)) {
-           availableMoves.push([potentialMove.slice(0), validation.targetPiece, specialMove]);
-          }
+         if (validation.available) {
+           if (freq == 'special') {
+             if (!attackThreatsOnly && this.checkSpecialCondition(validationPack)) {
+               availableMoves.push([potentialMove.slice(0), validation.targetPiece, specialMove]);
+             }
+           }
+           else if (freq == 'attack') {
+             if (this.checkSpecialCondition(validationPack))
+               availableMoves.push([potentialMove.slice(0), validation.targetPiece, specialMove]);
+           }
+         }
        }
     }
-
     return availableMoves;
-
-    if (piece.attackMoves == undefined) {
-      //TODO: check for king's ability to castle
-      return ['not pawn', piece.pos];
-    }
-    else {
-      //TODO: Pawn special moves (first double move, en passant, attack)
-      return ['pawn', piece.pos];
-    }
   };
 
   this.checkSpecialCondition = function(obj) {
@@ -414,7 +414,7 @@ function Chess() {
             if (attackingPiece == 'empty' || attackingPiece.color == color) continue;
             else {
               var moves;
-              moves = this.getAvailableMoves(attackingPiece);
+              moves = this.getAvailableMoves(attackingPiece, true);
               returnValue.piece = this.getPieceFromCoords(coords);
               moves.forEach(function(move) {
                 if (String(move[0]) == String(coords)) {
@@ -434,7 +434,7 @@ function Chess() {
           if (attackingPiece == 'empty' || attackingPiece.color == color) continue;
           else {
             var moves;
-            moves = this.getAvailableMoves(attackingPiece);
+            moves = this.getAvailableMoves(attackingPiece, true);
             moves.forEach(function(move) {
               if (move[1] !== undefined && move[1].color === color && move[1].nickname == 'K') {
                 console.log('check!');
