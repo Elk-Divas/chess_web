@@ -466,7 +466,6 @@ function Chess() {
               returnValue.piece = this.getPieceFromCoords(coords);
               moves.forEach(function(move) {
                 if (String(move[0]) == String(coords)) {
-                  console.log('match!', move, coords);
                   returnValue.threatBool = true;
                   returnValue.attacker = attackingPiece;
                 }
