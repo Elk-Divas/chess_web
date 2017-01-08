@@ -13,6 +13,5 @@
   this.togglePieceLogging = function() {
     this.chess.isPieceLogging = !this.chess.isPieceLogging;
   };
-
   this.newGame();
 })(window);

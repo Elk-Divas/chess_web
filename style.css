@@ -31,3 +31,23 @@ table {
 .white-board-position {
   background: #999;
 }
+
+#messages {
+  display: block;
+  height: 20px;
+  width: 100%;
+  text-align: center
+}
+
+.sidebar {
+  position: absolute;
+  height: 50%;
+  width: 20%;
+  left: 3%;
+  top: 10%;
+  border: 1px solid black;
+}
+
+#captured-pieces {
+
+}

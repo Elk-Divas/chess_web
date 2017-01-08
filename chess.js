@@ -1,7 +1,10 @@
 function Chess() {
   //Main Chess Game Class
   
+  //TODO: Finalize Check and checkmate
   //TODO: Add pawn upgrade functionality when reaching other side of the board
+  //TODO: Fill and empty Captured Pieces container while playing and undoing
+  //TODO: Build AI
 
   this.printBoard = function() {
     for (var i = 0; i < 8; i++) {
@@ -20,6 +23,19 @@ function Chess() {
         }
       }
     }
+    if (this.isKingInCheck) { 
+      var colors = ['blue', 'red', 'green', 'yellow', 'pink', 'white', 'purple'];
+      $('#messages').css({fontSize:'1px'});
+      $('#messages').html('CHECK!'); 
+      $('#messages').show();
+      $('#messages').animate({fontSize:'80px', color: colors[Math.floor(Math.random() * 7)]}, 400, "swing", function() {
+        console.log('Animation complete');
+      });
+    }
+    else $('#messages').animate({opacity:'0.0'}, 400, "swing", function() {
+      $(this).hide();
+      $(this).css({opacity: 1.0});
+    }); 
   };
 
   this.changeTurns = function() {
@@ -193,9 +209,9 @@ function Chess() {
       colorTurn:            this.colorTurn
     });
 
-    this.printBoard();
     this.changeTurns();
     this.evaluateBoard();
+    this.printBoard();
   };
 
   this.handleSpecialMove = function(piece, specialMove, oldPos) {
@@ -449,7 +465,7 @@ function Chess() {
   };
 
   this.checkForThreat = function(coords, color) {
-    var returnValue = {threatBool: false, attacker: undefined, piece: undefined, kingCheck: false};
+    var returnValue = {threatBool: false, attacker: [], piece: [], kingCheck: false};
     if (!!coords) { 
       console.log(coords);
       var pieceInPos = this.getPieceFromCoords(coords);
@@ -460,11 +476,11 @@ function Chess() {
             else {
               var moves;
               moves = this.getAvailableMoves(attackingPiece, true);
-              returnValue.piece = this.getPieceFromCoords(coords);
               moves.forEach(function(move) {
                 if (String(move[0]) == String(coords)) {
                   returnValue.threatBool = true;
-                  returnValue.attacker = attackingPiece;
+                  returnValue.attacker.push(attackingPiece);
+                  returnValue.piece.push(pieceInPos);
                 }
               });
             }
@@ -481,8 +497,13 @@ function Chess() {
             moves = this.getAvailableMoves(attackingPiece, true);
             moves.forEach(function(move) {
               if (move[1] !== undefined && move[1].color === color && move[1].nickname == 'K') {
-                console.log('check!');
+                returnValue.attacker.push(attackingPiece);
+                returnValue.piece.push(move[1]);
                 returnValue.kingCheck = true;
+              }
+              else if (move[1] !== undefined && move[1].color === color) {
+                returnValue.attacker.push(attackingPiece);
+                returnValue.piece.push(move[1]);
               }
             });
           }
@@ -495,8 +516,14 @@ function Chess() {
   this.evaluateBoard = function() {
     var results;
     results = this.checkForThreat(null, this.colorTurn);
-    if (results.kingCheck) this.isKingInCheck = true;
-    else this.isKingInCheck = false;
+    if (results.kingCheck) {
+      this.isKingInCheck = true;
+      console.log(results);
+    }
+    else {
+      this.isKingInCheck = false;
+      console.log("for " + this.colorTurn + ':',  results);
+    }  
   };
   
   this.undo = function() {
