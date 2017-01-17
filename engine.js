@@ -14,4 +14,8 @@
     this.chess.isPieceLogging = !this.chess.isPieceLogging;
   };
   this.newGame();
+  $(w).on('resize', function() {
+    var height = $('#chess-board-table tbody').css('height');
+    $('#captured-pieces').css({height: height});
+  });
 })(window);

@@ -17,6 +17,11 @@ function Chess() {
           el.style.backgroundRepeat = 'no-repeat';
           el.style.backgroundPosition = 'center center';
         }
+        else if (this.board[i][j] instanceof Piece && !this.board[i][j].isInGame) {
+          //var piece = this.board[i][j];
+          el.style.backgroundImage = '';
+          this.board[i][j] = [];
+        }
         else {
           el.style.backgroundImage = '';
           this.board[i][j] = [];
@@ -28,14 +33,15 @@ function Chess() {
       $('#messages').css({fontSize:'1px'});
       $('#messages').html('CHECK!'); 
       $('#messages').show();
-      $('#messages').animate({fontSize:'80px', color: colors[Math.floor(Math.random() * 7)]}, 400, "swing", function() {
+      $('#messages').animate({fontSize:'80px', color: colors[Math.floor(Math.random() * 7)]}, 200, "swing", function() {
         console.log('Animation complete');
       });
     }
-    else $('#messages').animate({opacity:'0.0'}, 400, "swing", function() {
+    else $('#messages').animate({opacity:'0.0', fontSize:'1px'}, 200, "swing", function() {
       $(this).hide();
       $(this).css({opacity: 1.0});
     }); 
+    $('#captured-pieces').css({height: $('#chess-board-table tbody').css('height')});
   };
 
   this.changeTurns = function() {
@@ -108,7 +114,6 @@ function Chess() {
       var index = movePos.indexOf(elId);
       if (index !== -1) {
         // available move for selected piece;
-        //TODO: determine if this is a special move (castle) -- this has to be handled differently by the movePiece function
         this.movePiece(this.selectedPiece, movePos[index], targetPiece[index], specialMove[index]);
         this.isPieceSelected = false;
         this.availableMoves = [];
@@ -119,8 +124,6 @@ function Chess() {
         this.isPieceSelected = false;
         this.availableMoves = [];
         if (this.selectedPiece.color == piece.color) {
-          // changing selected piece
-          //this.selectPiece(elId);
           el.style.border = '2px solid green';
           this.showAvailableMoves(piece);
           if (this.availableMoves.length > 0) {
@@ -148,13 +151,27 @@ function Chess() {
     }
   };
 
+  this.capturePiece = function(piece) {
+    piece.isInGame = false;
+    if (piece.color == 'White') {
+      this.capturedWhite++;
+      var el = 'wcp' + String(this.capturedWhite);
+      $('#'+el).html('<img src='+piece.lightImage+'/>');
+    }
+    else {
+      this.capturedBlack++;
+      var el = 'bcp' + String(this.capturedBlack);
+      $('#'+el).html('<img src='+piece.darkImage+'/>');
+    } 
+  };
+
   this.movePiece = function(piece, newPos, targetPiece, specialMove) {
     var oldPos = piece.pos,
         newPosCoords = this.getBoardCoordsFromBoardName(newPos),
         isFirstMove, specialMoveResults, historyState = {};
 
     if (targetPiece !== undefined) {
-      targetPiece.isInGame = false;
+      this.capturePiece(targetPiece);
     }
     if (this.isEnpassant) {
       historyState.isEnpassant = true;
@@ -618,6 +635,8 @@ function Chess() {
     this.isEnpassant = false;
     this.colorTurn = 'White';
     this.isPieceLogging = false;
+    this.capturedWhite = 0;
+    this.capturedBlack = 0;
     this.gameState = {
       moveHistory: [], 
       addToMoveHistory: function(moveHistory) {

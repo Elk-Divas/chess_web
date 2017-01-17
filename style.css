@@ -32,22 +32,31 @@ table {
   background: #999;
 }
 
+.white-captured-piece {
+  display: block;
+  width: 60px;
+  float: left;
+}
+
+.black-captured-piece {
+  display: block;
+  width: 60px;
+  float: right;
+}
+
 #messages {
   display: block;
-  height: 20px;
+  height: 0px;
   width: 100%;
   text-align: center
 }
 
 .sidebar {
+  display: block;
   position: absolute;
   height: 50%;
   width: 20%;
   left: 3%;
-  top: 10%;
+  margin-top: 5%;
   border: 1px solid black;
-}
-
-#captured-pieces {
-
 }
