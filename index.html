@@ -14,157 +14,198 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   </head>
   <body>
-    <div id="messages">
-    </div>
-    <div class="table-responsive">
-      <table class="sidebar" id="captured-pieces">
-        <thead>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="white-captured-piece" id='wcp1'></td>
-            <td class="white-captured-piece" id='wcp2'></td>
-            <td class="black-captured-piece" id='bcp1'></td>
-            <td class="black-captured-piece" id='bcp2'></td>
-          </tr>
-          <tr>
-            <td class="white-captured-piece" id='wcp3'></td>
-            <td class="white-captured-piece" id='wcp4'></td>
-            <td class="black-captured-piece" id='bcp3'></td>
-            <td class="black-captured-piece" id='bcp4'></td>
-          </tr>
-          <tr>
-            <td class="white-captured-piece" id='wcp5'></td>
-            <td class="white-captured-piece" id='wcp6'></td>
-            <td class="black-captured-piece" id='bcp5'></td>
-            <td class="black-captured-piece" id='bcp6'></td>
-          </tr>
-          <tr>
-            <td class="white-captured-piece" id='wcp7'></td>
-            <td class="white-captured-piece" id='wcp8'></td>
-            <td class="black-captured-piece" id='bcp7'></td>
-            <td class="black-captured-piece" id='bcp8'></td>
-          </tr>
-          <tr>
-            <td class="white-captured-piece" id='wcp9'></td>
-            <td class="white-captured-piece" id='wcp10'></td>
-            <td class="black-captured-piece" id='bcp9'></td>
-            <td class="black-captured-piece" id='bcp10'></td>
-          </tr>
-          <tr>
-            <td class="white-captured-piece" id='wcp11'></td>
-            <td class="white-captured-piece" id='wcp12'></td>
-            <td class="black-captured-piece" id='bcp11'></td>
-            <td class="black-captured-piece" id='bcp12'></td>
-          </tr>
-          <tr>
-            <td class="white-captured-piece" id='wcp13'></td>
-            <td class="white-captured-piece" id='wcp14'></td>
-            <td class="black-captured-piece" id='bcp13'></td>
-            <td class="black-captured-piece" id='bcp14'></td>
-          </tr>
-          <tr>
-            <td class="white-captured-piece" id='wcp15'></td>
-            <td class="white-captured-piece" id='wcp16'></td>
-            <td class="black-captured-piece" id='bcp15'></td>
-            <td class="black-captured-piece" id='bcp16'></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-	  <div class="table-responsive">
-	    <table name="chess-board" id="chess-board-table" class="table">
-	      <thead>
-	      </thead>
-	      <tbody>
-	        <tr>
-	          <td class="white-board-position" id="a8" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="b8" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="c8" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="d8" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="e8" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="f8" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="g8" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="h8" onclick="clickPiece(this);"></td>
-	        </tr>
-	        <tr>
-	          <td class="black-board-position" id="a7" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="b7" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="c7" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="d7" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="e7" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="f7" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="g7" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="h7" onclick="clickPiece(this);"></td>
-	        </tr>
-	        <tr>
-	          <td class="white-board-position" id="a6" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="b6" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="c6" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="d6" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="e6" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="f6" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="g6" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="h6" onclick="clickPiece(this);"></td>
-	        </tr>
-	        <tr>
-	          <td class="black-board-position" id="a5" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="b5" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="c5" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="d5" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="e5" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="f5" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="g5" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="h5" onclick="clickPiece(this);"></td>
-	        </tr>
-	        <tr>
-	          <td class="white-board-position" id="a4" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="b4" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="c4" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="d4" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="e4" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="f4" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="g4" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="h4" onclick="clickPiece(this);"></td>
-	        </tr>
-	        <tr>
-	          <td class="black-board-position" id="a3" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="b3" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="c3" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="d3" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="e3" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="f3" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="g3" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="h3" onclick="clickPiece(this);"></td>
-	        </tr>
-	        <tr>
-	          <td class="white-board-position" id="a2" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="b2" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="c2" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="d2" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="e2" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="f2" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="g2" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="h2" onclick="clickPiece(this);"></td>
-	        </tr>
-	        <tr>
-	          <td class="black-board-position" id="a1" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="b1" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="c1" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="d1" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="e1" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="f1" onclick="clickPiece(this);"></td>
-	          <td class="black-board-position" id="g1" onclick="clickPiece(this);"></td>
-	          <td class="white-board-position" id="h1" onclick="clickPiece(this);"></td>
-	        </tr>
-	        </tbody>
-	    </table>
-	  </div><!--/table-responsive-wrapper-->
-    <div>
-      <input type="button" value="New Game" onclick="newGame();"/>
-      <input type="button" value="Undo" onclick="undo();"/>
-      <input type="button" value="Get Piece Information" onclick="togglePieceLogging();"/>
-    </div>
+    
+    <div class="container">
+	    <div class="row">
+			<div class="col-sm-9 col-sm-push-3">
+				<div class="table-responsive">
+			    <table name="chess-board" id="chess-board-table" class="table">
+			      <thead>
+			      </thead>
+			      <tbody>
+			        <tr>
+			          <td class="white-board-position" id="a8" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="b8" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="c8" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="d8" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="e8" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="f8" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="g8" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="h8" onclick="clickPiece(this);"></td>
+			        </tr>
+			        <tr>
+			          <td class="black-board-position" id="a7" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="b7" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="c7" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="d7" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="e7" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="f7" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="g7" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="h7" onclick="clickPiece(this);"></td>
+			        </tr>
+			        <tr>
+			          <td class="white-board-position" id="a6" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="b6" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="c6" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="d6" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="e6" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="f6" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="g6" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="h6" onclick="clickPiece(this);"></td>
+			        </tr>
+			        <tr>
+			          <td class="black-board-position" id="a5" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="b5" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="c5" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="d5" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="e5" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="f5" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="g5" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="h5" onclick="clickPiece(this);"></td>
+			        </tr>
+			        <tr>
+			          <td class="white-board-position" id="a4" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="b4" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="c4" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="d4" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="e4" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="f4" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="g4" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="h4" onclick="clickPiece(this);"></td>
+			        </tr>
+			        <tr>
+			          <td class="black-board-position" id="a3" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="b3" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="c3" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="d3" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="e3" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="f3" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="g3" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="h3" onclick="clickPiece(this);"></td>
+			        </tr>
+			        <tr>
+			          <td class="white-board-position" id="a2" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="b2" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="c2" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="d2" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="e2" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="f2" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="g2" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="h2" onclick="clickPiece(this);"></td>
+			        </tr>
+			        <tr>
+			          <td class="black-board-position" id="a1" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="b1" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="c1" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="d1" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="e1" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="f1" onclick="clickPiece(this);"></td>
+			          <td class="black-board-position" id="g1" onclick="clickPiece(this);"></td>
+			          <td class="white-board-position" id="h1" onclick="clickPiece(this);"></td>
+			        </tr>
+			        </tbody>
+			    </table>
+			  </div><!--/table-responsive-wrapper-->
+			</div><!--/col-->
+			<div class="col-sm-3 col-sm-pull-9 sidebar">
+			  <div id="messages">
+				</div>
+				
+				<div class="captured-piece-wrapper row">
+				    <div class="col-xs-6">
+				     <div class="table-responsive">
+				       <table id="captured-pieces-white">
+				         <tbody>
+				           <tr>
+				             <td class="white-captured-piece" id='wcp1'></td>
+				             <td class="white-captured-piece" id='wcp2'></td>
+				           </tr>
+				           <tr>
+				             <td class="white-captured-piece" id='wcp3'></td>
+				             <td class="white-captured-piece" id='wcp4'></td>
+				           </tr>
+				           <tr>
+				             <td class="white-captured-piece" id='wcp5'></td>
+				             <td class="white-captured-piece" id='wcp6'></td>
+				           </tr>
+				           <tr>
+				             <td class="white-captured-piece" id='wcp7'></td>
+				             <td class="white-captured-piece" id='wcp8'></td>
+				           </tr>
+				           <tr>
+				             <td class="white-captured-piece" id='wcp9'></td>
+				             <td class="white-captured-piece" id='wcp10'></td>
+				           </tr>
+				           <tr>
+				             <td class="white-captured-piece" id='wcp11'></td>
+				             <td class="white-captured-piece" id='wcp12'></td>
+				           </tr>
+				           <tr>
+				             <td class="white-captured-piece" id='wcp13'></td>
+				             <td class="white-captured-piece" id='wcp14'></td>
+				           </tr>
+				           <tr>
+				             <td class="white-captured-piece" id='wcp15'></td>
+				             <td class="white-captured-piece" id='wcp16'></td>
+				           </tr>
+				         </tbody>
+				       </table>
+				     </div>
+				    </div><!--/col-->
+				    <div class="col-xs-6">
+				     <div class="table-responsive">
+				       <table id="captured-pieces-black">
+				         <tbody>
+				           <tr>
+				             <td class="black-captured-piece" id='bcp1'></td>
+				             <td class="black-captured-piece" id='bcp2'></td>
+				           </tr>
+				           <tr>
+				             <td class="black-captured-piece" id='bcp3'></td>
+				             <td class="black-captured-piece" id='bcp4'></td>
+				           </tr>
+				           <tr>
+				             <td class="black-captured-piece" id='bcp5'></td>
+				             <td class="black-captured-piece" id='bcp6'></td>
+				           </tr>
+				           <tr>
+				             <td class="black-captured-piece" id='bcp7'></td>
+				             <td class="black-captured-piece" id='bcp8'></td>
+				           </tr>
+				           <tr>
+				             <td class="black-captured-piece" id='bcp9'></td>
+				             <td class="black-captured-piece" id='bcp10'></td>
+				           </tr>
+				           <tr>
+				             <td class="black-captured-piece" id='bcp11'></td>
+				             <td class="black-captured-piece" id='bcp12'></td>
+				           </tr>
+				           <tr>
+				             <td class="black-captured-piece" id='bcp13'></td>
+				             <td class="black-captured-piece" id='bcp14'></td>
+				           </tr>
+				           <tr>
+				             <td class="black-captured-piece" id='bcp15'></td>
+				             <td class="black-captured-piece" id='bcp16'></td>
+				           </tr>
+				         </tbody>
+				       </table>
+				     </div>
+				    </div><!--/col-->
+				</div><!--/row-->
+
+				
+				
+				<div class="row">
+			      <input type="button" value="New Game" onclick="newGame();"/>
+			      <input type="button" value="Undo" onclick="undo();"/>
+			      <input type="button" value="Get Piece Information" onclick="togglePieceLogging();"/>
+			    </div>
+		    </div><!--/col-->
+	    </div><!--/row-->
+    </div><!--/container-->
+    
+    
   </body>
   <footer>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
