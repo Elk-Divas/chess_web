@@ -16,6 +16,7 @@ function Chess() {
           el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
           el.style.backgroundRepeat = 'no-repeat';
           el.style.backgroundPosition = 'center center';
+          el.style.backgroundSize = 'contain';
         }
         else if (this.board[i][j] instanceof Piece && !this.board[i][j].isInGame) {
           //var piece = this.board[i][j];
