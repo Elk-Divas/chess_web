@@ -5,6 +5,7 @@
   this.newGame = function() {
     this.chess = new Chess();
     this.chess.init();
+    this.chess.resetCapturedPieces();
     this.chess.printBoard();
   };
   this.undo = function() {

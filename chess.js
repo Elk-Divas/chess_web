@@ -627,6 +627,21 @@ function Chess() {
     return y >= 0 && y < 8 && x >= 0 && x < 8 ? [y, x] : undefined;
   };
 
+  this.resetCapturedPieces = function() {
+    var white = document.getElementById('captured-pieces-white');
+    var black = document.getElementById('captured-pieces-black');
+    for (var i = 0, row; row = white.rows[i]; i++) {
+      for (var j = 0, cell; cell = row.cells[j]; j++) {
+        $('#'+cell.id).html('');
+      }
+    }
+    for (var i = 0, row; row = black.rows[i]; i++) {
+      for (var j = 0, cell; cell = row.cells[j]; j++) {
+        $('#'+cell.id).html('');
+      }
+    }
+  };
+
   this.init = function() {
     this.board = new Array(); // Array to hold board positions
     this.availableMoves = new Array(); 
