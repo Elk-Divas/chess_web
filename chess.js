@@ -14,18 +14,24 @@ function Chess() {
         el.style.border = '2px solid black';
         if (this.board[i][j] instanceof Piece && this.board[i][j].isInGame) {
           el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
-          el.style.backgroundRepeat = 'no-repeat';
-          el.style.backgroundPosition = 'center center';
-          el.style.backgroundSize = 'contain';
-        }
-        else if (this.board[i][j] instanceof Piece && !this.board[i][j].isInGame) {
-          //var piece = this.board[i][j];
-          el.style.backgroundImage = '';
-          this.board[i][j] = [];
+          $(el).addClass(function(index, currentClass) {
+            var addClass;
+            if (currentClass !== 'game-piece') {
+              addClass = 'game-piece';
+            };
+            return addClass;
+          });
         }
         else {
           el.style.backgroundImage = '';
           this.board[i][j] = [];
+          $(el).removeClass(function(index, currentClass) {
+            var removeClass;
+            if (currentClass === 'game-piece') {
+              removeClass = 'game-piece';
+            }
+            return removeClass;
+          });
         }
       }
     }
