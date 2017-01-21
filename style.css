@@ -35,6 +35,7 @@ table {
   background-position: center center;
   background-size: contain; 
 }
+@media (min-width: 768px) {.game-piece {background-size: auto;}}
 
 #messages {
   display: block;
