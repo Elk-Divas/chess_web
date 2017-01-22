@@ -49,3 +49,4 @@ table {
   border: 1px solid black;
   height: 640px;
 }
+@media (min-width: 768px) {img {height: 30px; width: 30px;}}
