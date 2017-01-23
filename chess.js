@@ -203,6 +203,9 @@ function Chess() {
         }
         isFirstMove = piece.isFirstMove;
         piece.isFirstMove = false;
+        if (piece.pos[0] == (piece.color == 'White' ? 7 : 0)) {
+          this.promotePawn(piece);
+        }
         break;
       case 'R':
         isFirstMove = piece.isFirstMove;
@@ -234,6 +237,26 @@ function Chess() {
     });
 
     this.changeTurns();
+    this.evaluateBoard();
+    this.printBoard();
+  };
+
+  this.promotePawn = function(piece) {
+    var chosenPromotion, el;
+    el = document.getElementById('promotion');
+    el.style.display = 'block';
+    this.pieceToPromote = piece;
+  };
+
+  this.choosePromotion = function(newPiece) {
+    var piece = this.pieceToPromote, pos = this.pieceToPromote.pos.slice(0);
+    this.board[pos[0]][pos[1]] = new Piece(newPiece, pos[0], pos[1], piece.posName, piece.color);
+
+    el = document.getElementById('promotion');
+    el.style.display = 'none';
+    console.log(piece);
+    this.pieceToPromote = undefined;
+
     this.evaluateBoard();
     this.printBoard();
   };
@@ -659,6 +682,7 @@ function Chess() {
     this.isPieceLogging = false;
     this.capturedWhite = 0;
     this.capturedBlack = 0;
+    this.pieceToPromote = undefined;
     this.gameState = {
       moveHistory: [], 
       addToMoveHistory: function(moveHistory) {
@@ -703,14 +727,18 @@ function Chess() {
 
 }
 
-function Piece(piece, row, col, posName) {
+function Piece(piece, row, col, posName, promotionColor) {
   // Chess Pieces
-  if (row <= 2) {
+  if (promotionColor == undefined) promotionColor = false;
+  if (row <= 2 && !promotionColor) {
     this.color = "White";
   } 
-  else {
+  else if (row > 2 && !promotionColor) {
     this.color = "Black";
   }  
+  else if (!!promotionColor) {
+    this.color = promotionColor;
+  }
   this.pos = [row, col];
   this.posName = posName;
   switch (piece) {

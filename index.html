@@ -193,14 +193,18 @@
 				     </div>
 				    </div><!--/col-->
 				</div><!--/row-->
-
-				
-				
 				<div class="row">
 			      <input type="button" value="New Game" onclick="newGame();"/>
 			      <input type="button" value="Undo" onclick="undo();"/>
 			      <input type="button" value="Get Piece Information" onclick="togglePieceLogging();"/>
-			    </div>
+			  </div>
+        <div class="row" id="promotion">
+          <p> Choose a promotion </p>
+          <input type="button" value="Queen" id="promotion-queen" onclick="choosePromotion('Q');"/>
+          <input type="button" value="Rook" id="promotion-rook" onclick="choosePromotion('R');"/>
+          <input type="button" value="Bishop" id="promotion-bishop" onclick="choosePromotion('B');"/>
+          <input type="button" value="Knight" id="promotion-knight" onclick="choosePromotion('N');"/>
+        </div>
 		    </div><!--/col-->
 	    </div><!--/row-->
     </div><!--/container-->

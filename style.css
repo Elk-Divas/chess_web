@@ -49,4 +49,8 @@ table {
   border: 1px solid black;
   height: 640px;
 }
+
+#promotion {
+  display: none;
+}
 @media (min-width: 768px) {img {height: 30px; width: 30px;}}
