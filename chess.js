@@ -2,7 +2,6 @@ function Chess() {
   //Main Chess Game Class
   
   //TODO: Finalize Check and checkmate
-  //TODO: Add pawn upgrade functionality when reaching other side of the board
   //TODO: Fill and empty Captured Pieces container while playing and undoing
   //TODO: Build AI
 
@@ -159,6 +158,7 @@ function Chess() {
   };
 
   this.capturePiece = function(piece) {
+    if (piece == undefined) return;
     piece.isInGame = false;
     if (piece.color == 'White') {
       this.capturedWhite++;
@@ -170,6 +170,7 @@ function Chess() {
       var el = 'bcp' + String(this.capturedBlack);
       $('#'+el).html('<img src='+piece.darkImage+'/>');
     } 
+    return el;
   };
 
   this.movePiece = function(piece, newPos, targetPiece, specialMove) {
@@ -178,7 +179,7 @@ function Chess() {
         isFirstMove, specialMoveResults, historyState = {};
 
     if (targetPiece !== undefined) {
-      this.capturePiece(targetPiece);
+      var capturedEl = this.capturePiece(targetPiece);
     }
     if (this.isEnpassant) {
       historyState.isEnpassant = true;
@@ -196,9 +197,16 @@ function Chess() {
           specialMoveResults = this.handleSpecialMove(piece, specialMove);
           if (Object.prototype.toString.call(specialMoveResults) == '[object Array]') {
             specialMoveResults.forEach(function(piece) {
-              if (!!piece && piece.enpassantRight) historyState.enpassantRight = {bool: true, piece: piece};
-              if (!!piece && piece.enpassantLeft) historyState.enpassantLeft = {bool: true, piece: piece};
+              if (!!piece && piece.enpassantRight) {
+                historyState.enpassantRight = {bool: true, piece: piece};
+              }
+              if (!!piece && piece.enpassantLeft) {
+                historyState.enpassantLeft = {bool: true, piece: piece};
+              }
             });
+          }
+          else {
+            var capturedEl = this.capturePiece(specialMoveResults);
           }
         }
         isFirstMove = piece.isFirstMove;
@@ -233,6 +241,7 @@ function Chess() {
       historyState:         historyState,
       piece:                piece,
       targetPiece:          targetPiece,
+      capturedElement:      capturedEl,
       colorTurn:            this.colorTurn
     });
 
@@ -590,6 +599,7 @@ function Chess() {
     if (lastMove.targetPiece != undefined) {
       lastMove.targetPiece.isInGame = true;
       this.board[lastMove.targetPiece.pos[0]][lastMove.targetPiece.pos[1]] = lastMove.targetPiece;
+      this.removeLastFromCapturedList(lastMove.colorTurn);
     }
 
     if (!!lastMove.historyState.isEnpassant) {
@@ -609,6 +619,7 @@ function Chess() {
     if (lastMove.specialMove !== undefined && (lastMove.specialMove.name == 'enpassant-left' || lastMove.specialMove.name == 'enpassant-right')) {
       this.board[lastMove.specialMoveResults.pos[0]][lastMove.specialMoveResults.pos[1]] = lastMove.specialMoveResults;
       lastMove.specialMoveResults.isInGame = true;
+      this.removeLastFromCapturedList(lastMove.colorTurn);
       if (lastMove.specialMove.name == 'enpassant-left') {
         lastMove.piece.enpassantLeft = true; 
         var tempCoords = lastMove.from;
@@ -655,7 +666,17 @@ function Chess() {
   this.validateCoords = function(y, x) {
     return y >= 0 && y < 8 && x >= 0 && x < 8 ? [y, x] : undefined;
   };
-
+  this.removeLastFromCapturedList = function(color) {
+    var capturedColor = color == 'White' ? 'Black' : 'White';
+    if (capturedColor == 'White') {
+      $('#wcp'+String(this.capturedWhite)).html('');
+      this.capturedWhite--;
+    }
+    else {
+      $('#bcp'+String(this.capturedBlack)).html('');
+      this.capturedBlack--;
+    }
+  };
   this.resetCapturedPieces = function() {
     var white = document.getElementById('captured-pieces-white');
     var black = document.getElementById('captured-pieces-black');
