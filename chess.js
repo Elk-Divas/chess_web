@@ -10,13 +10,13 @@ function Chess() {
       for (var j = 0; j < 8; j++) {
         var pos = this.getBoardPosition(i, j);
         el = document.getElementById(pos);
-        el.style.border = '2px solid black';
+        this.resetBoardBorderColors();
         if (this.board[i][j] instanceof Piece && this.board[i][j].isInGame) {
           el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
           $(el).addClass(function(index, currentClass) {
-            var addClass;
-            if (currentClass !== 'game-piece') {
-              addClass = 'game-piece';
+            var addClass = '';
+            if (currentClass.indexOf('game-piece') === -1) {
+              addClass += 'game-piece';
             };
             return addClass;
           });
@@ -25,9 +25,9 @@ function Chess() {
           el.style.backgroundImage = '';
           this.board[i][j] = [];
           $(el).removeClass(function(index, currentClass) {
-            var removeClass;
-            if (currentClass === 'game-piece') {
-              removeClass = 'game-piece';
+            var removeClass = '';
+            if (currentClass.indexOf('game-piece') !== -1) {
+              removeClass += 'game-piece';
             }
             return removeClass;
           });
@@ -102,7 +102,7 @@ function Chess() {
       // Selecting a Piece 
       if (piece === 'empty') return;
       else {
-        el.style.border = '2px solid green';
+        this.showSelectedPiece(elId);
         this.showAvailableMoves(piece);
         if (this.availableMoves.length > 0) {
           this.isPieceSelected = true;
@@ -130,7 +130,7 @@ function Chess() {
         this.isPieceSelected = false;
         this.availableMoves = [];
         if (this.selectedPiece.color == piece.color) {
-          el.style.border = '2px solid green';
+          this.showSelectedPiece(elId);
           this.showAvailableMoves(piece);
           if (this.availableMoves.length > 0) {
             this.isPieceSelected = true;
@@ -142,6 +142,16 @@ function Chess() {
         }      
       }
     }
+  };
+
+  this.showSelectedPiece = function(el) {
+    $('#'+el).addClass(function(index, currentClass) {
+      var addClass = '';
+      if (currentClass.indexOf('selected-piece') === -1) {
+        addClass += 'selected-piece';
+      }
+      return addClass;
+    });
   };
 
   this.resetEnpassant = function() {
@@ -353,7 +363,16 @@ function Chess() {
     var table = document.getElementById('chess-board-table');
     for (var i = 0, row; row = table.rows[i]; i++) {
       for (var j = 0, cell; cell = row.cells[j]; j++) {
-        document.getElementById(cell.id).style.border = '2px solid black';
+        $('#'+cell.id).removeClass(function(index, currentClass) {
+          var removeClass = '';
+          if (currentClass.indexOf('available-move') !== -1) {
+            removeClass += 'available-move ';
+          }
+          if (currentClass.indexOf('selected-piece') !== -1) {
+            removeClass += 'selected-piece';
+          }
+          return removeClass;
+        });
       }
     }
   };
@@ -363,7 +382,13 @@ function Chess() {
     this.availableMoves = availableMoves.slice(0);
     for (var i = 0; i < availableMoves.length; i++) {
       var boardName = this.getBoardPosition(availableMoves[i][0][0], availableMoves[i][0][1]);
-      document.getElementById(boardName).style.border = '2px solid yellow';
+      $('#'+boardName).addClass(function(index, currentClass) {
+        var addClass = '';
+        if (currentClass.indexOf('available-move') == -1) {
+          addClass += 'available-move';
+        }
+        return addClass;
+      });
     }
   };
 
