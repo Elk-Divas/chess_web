@@ -8,8 +8,8 @@ function Chess() {
   this.printBoard = function() {
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 8; j++) {
-        var pos = this.getBoardPosition(i, j);
-        el = document.getElementById(pos);
+        var pos = this.getBoardPosition(i, j),
+            el = document.getElementById(pos);
         this.resetBoardBorderColors();
         if (this.board[i][j] instanceof Piece && this.board[i][j].isInGame) {
           el.style.backgroundImage = this.board[i][j].color == 'White' ? "url('" + this.board[i][j].lightImage + "')": "url('" + this.board[i][j].darkImage + "')";
@@ -82,7 +82,7 @@ function Chess() {
   this.getPieceFromCoords = function(y, x) {
     if (Object.prototype.toString.call(y) === '[object Array]' && x == undefined) {
       // if an array was given
-      x = y[1], y = y[0]
+      x = y[1], y = y[0];
     }
     return this.getPieceFromBoardName(this.getBoardPosition(y,x));
   };
